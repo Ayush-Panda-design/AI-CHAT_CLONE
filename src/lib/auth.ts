@@ -5,14 +5,21 @@ interface JWTPayload { userId: string; email?: string; iat?: number; exp?: numbe
 
 export function verifyAuth(req: NextRequest): JWTPayload | null {
   try {
+    // Check Authorization header first (normal JWT login)
     const auth = req.headers.get("authorization");
-    const token = auth?.startsWith("Bearer ") ? auth.split(" ")[1] : null;
+    const headerToken = auth?.startsWith("Bearer ") ? auth.split(" ")[1] : null;
+
+    // Fall back to cookie (Google OAuth login)
+    const cookieToken = req.cookies.get("accessToken")?.value ?? null;
+
+    const token = headerToken || cookieToken;
     if (!token) return null;
+
     return jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
   } catch {
     return null;
   }
-}
+}}
 
 export function signAccessToken(userId: string, email: string) {
   return jwt.sign({ userId, email }, process.env.JWT_SECRET!, { expiresIn: "15m" });
