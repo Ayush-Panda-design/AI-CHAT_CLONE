@@ -1,16 +1,27 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { Sidebar } from "@/components/chat/Sidebar";
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated, initAuth } = useAuthStore();
   const router = useRouter();
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    if (!isAuthenticated) router.push("/auth/login");
-  }, [isAuthenticated, router]);
+    if (isAuthenticated) {
+      setChecking(false);
+      return;
+    }
+    // Not in store — try restoring from cookie (Google OAuth flow)
+    initAuth().then((ok) => {
+      if (!ok) router.push("/auth/login");
+      setChecking(false);
+    });
+  }, []);
+
+  if (checking) return null; // avoid flash redirect
 
   if (!isAuthenticated) return null;
 
