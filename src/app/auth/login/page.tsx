@@ -38,6 +38,12 @@ export default function LoginPage() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Login failed");
+
+      // Clear any previous session (e.g. old Google account)
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("auth-store");
+      }
+
       login(json.user, json.accessToken);
       toast.success("Welcome back!");
       router.push("/chat");
