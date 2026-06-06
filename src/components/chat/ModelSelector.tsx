@@ -78,7 +78,7 @@ export function ModelSelector() {
 
   const dropdown = open ? (
     <div
-      style={dropdownStyle}
+      style={{ ...dropdownStyle, touchAction: "pan-y" }}
       className="glass border border-border rounded-xl shadow-2xl bg-card"
     >
       <div className="p-2 border-b border-border">
@@ -93,7 +93,7 @@ export function ModelSelector() {
           />
         </div>
       </div>
-      <div className="max-h-64 overflow-y-auto p-1">
+      <div className="max-h-64 overflow-y-auto p-1" style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}>
         {isLoading ? (
           [...Array(4)].map((_, i) => (
             <div key={i} className="h-10 rounded-lg bg-secondary animate-pulse mb-1" />

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Search, Pin, Trash2, Edit2, Settings,
-  MessageSquare, ChevronLeft, Zap, LogOut, X
+  MessageSquare, ChevronLeft, ChevronRight, Zap, LogOut, X
 } from "lucide-react";
 import { useChats } from "@/hooks/useChats";
 import { useAuthStore } from "@/store/authStore";
@@ -264,7 +264,7 @@ export function Sidebar() {
         className="sm:hidden fixed top-3 left-3 z-30 p-2 rounded-lg bg-card border border-border shadow-md"
         aria-label="Open sidebar"
       >
-        <Zap className="w-4 h-4 text-cyan-400" />
+        <ChevronRight className="w-4 h-4 text-cyan-400" />
       </button>
     </>
   );
