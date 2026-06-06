@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
+import { Session } from "@/models/Session";
 import { signAccessToken, signRefreshToken } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
@@ -45,6 +46,7 @@ export async function GET(req: NextRequest) {
         email: googleUser.email,
         googleId: googleUser.id,
         avatar: googleUser.picture,
+        provider: "google",
       });
     } else if (!user.googleId) {
       user.googleId = googleUser.id;
@@ -52,11 +54,21 @@ export async function GET(req: NextRequest) {
       await user.save();
     }
 
-    // 4. Sign tokens — matching your auth.ts signature exactly
+    // 4. Sign tokens
     const accessToken = signAccessToken(user._id.toString(), user.email);
     const refreshToken = signRefreshToken(user._id.toString());
 
-    // 5. Set cookies and redirect
+    // 5. Save session to DB — same as manual login
+    await Session.findOneAndUpdate(
+      { userId: user._id },
+      {
+        refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
+      { upsert: true }
+    );
+
+    // 6. Set cookies and redirect
     const response = NextResponse.redirect(`${appUrl}/chat`);
 
     response.cookies.set("accessToken", accessToken, {
@@ -64,6 +76,7 @@ export async function GET(req: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 15,
+      path: "/",
     });
 
     response.cookies.set("refreshToken", refreshToken, {
@@ -71,6 +84,7 @@ export async function GET(req: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7,
+      path: "/",
     });
 
     return response;
