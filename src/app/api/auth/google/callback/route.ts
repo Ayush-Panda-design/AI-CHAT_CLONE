@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
@@ -14,7 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // 1. Exchange code for tokens
+    // 1. Exchange code for Google tokens
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -46,37 +45,36 @@ export async function GET(req: NextRequest) {
         email: googleUser.email,
         googleId: googleUser.id,
         avatar: googleUser.picture,
-        // no password for Google users
       });
     } else if (!user.googleId) {
-      // existing email/password user — link Google account
       user.googleId = googleUser.id;
       user.avatar = user.avatar || googleUser.picture;
       await user.save();
     }
 
-    // 4. Issue JWT tokens (same as your normal login)
-    const accessToken = signAccessToken({ userId: user._id, email: user.email });
-    const refreshToken = signRefreshToken({ userId: user._id });
+    // 4. Sign tokens — matching your auth.ts signature exactly
+    const accessToken = signAccessToken(user._id.toString(), user.email);
+    const refreshToken = signRefreshToken(user._id.toString());
 
-    // 5. Set cookies and redirect to chat
+    // 5. Set cookies and redirect
     const response = NextResponse.redirect(`${appUrl}/chat`);
 
     response.cookies.set("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 15, // 15 minutes
+      maxAge: 60 * 15,
     });
 
     response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;
+
   } catch (err) {
     console.error("Google OAuth error:", err);
     return NextResponse.redirect(`${appUrl}/auth/login?error=google_failed`);
