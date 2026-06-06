@@ -1,4 +1,4 @@
-# NexusAI – Full-Stack AI Chat Application
+# AduraAI – Full-Stack AI Chat Application
 
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -12,7 +12,7 @@
 
 ## Project Overview
 
-NexusAI is a ChatGPT-inspired AI chat application where users can register, log in, and have real-time streamed conversations with 100+ AI models via the OpenRouter API. Each conversation is persisted to MongoDB Atlas, allowing users to revisit, rename, pin, and delete their chat history.
+AduraAI is a ChatGPT-inspired AI chat application where users can register, log in, and have real-time streamed conversations with 100+ AI models via the OpenRouter API. Each conversation is persisted to MongoDB Atlas, allowing users to revisit, rename, pin, and delete their chat history.
 
 The core purpose of this project is to demonstrate **every major Next.js full-stack concept** — not as isolated examples, but wired together into a working, coherent product.
 
