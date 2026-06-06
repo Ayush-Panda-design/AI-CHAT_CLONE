@@ -142,7 +142,7 @@ export function MessageInput({ onSend, isStreaming, onAbort }: Props) {
           </div>
         </div>
         <p className="text-xs text-muted-foreground text-center mt-2">
-          NexusAI can make mistakes. Verify important information.
+          AduraAI can make mistakes. Verify important information.
         </p>
       </div>
     </div>
