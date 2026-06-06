@@ -21,9 +21,18 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       isAuthenticated: false,
 
-      login: (user, accessToken) => set({ user, accessToken, isAuthenticated: true }),
+      login: (user, accessToken) => {
+        // Always clear previous session before setting new one
+        set({ user: null, accessToken: null, isAuthenticated: false });
+        set({ user, accessToken, isAuthenticated: true });
+      },
 
-      logout: () => set({ user: null, accessToken: null, isAuthenticated: false }),
+      logout: () => {
+        set({ user: null, accessToken: null, isAuthenticated: false });
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("auth-store");
+        }
+      },
 
       setAccessToken: (accessToken) => set({ accessToken }),
 
@@ -32,16 +41,15 @@ export const useAuthStore = create<AuthState>()(
 
       initAuth: async () => {
         try {
-          // 1. Try current token/cookie
           const res = await fetch("/api/auth/me", { credentials: "include" });
 
           if (res.ok) {
             const json = await res.json();
+            // Always overwrite store with fresh server data
             set({ user: json.user, isAuthenticated: true });
             return true;
           }
 
-          // 2. Token expired — try refresh
           if (res.status === 401) {
             const refreshRes = await fetch("/api/auth/refresh", {
               method: "POST",
@@ -50,16 +58,16 @@ export const useAuthStore = create<AuthState>()(
 
             if (!refreshRes.ok) {
               set({ user: null, accessToken: null, isAuthenticated: false });
+              if (typeof window !== "undefined") localStorage.removeItem("auth-store");
               return false;
             }
 
             const refreshJson = await refreshRes.json();
-
-            // 3. Retry /me with new token
             const retryRes = await fetch("/api/auth/me", { credentials: "include" });
 
             if (!retryRes.ok) {
               set({ user: null, accessToken: null, isAuthenticated: false });
+              if (typeof window !== "undefined") localStorage.removeItem("auth-store");
               return false;
             }
 
