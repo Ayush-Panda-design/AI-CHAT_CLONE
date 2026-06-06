@@ -13,6 +13,7 @@ export function ModelSelector() {
   const { selectedModel, setSelectedModel } = useModelStore();
   const { models, isLoading } = useModels();
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Compute dropdown position from button bounding rect
   const updatePosition = useCallback(() => {
@@ -55,6 +56,7 @@ export function ModelSelector() {
     function handleOutside(e: MouseEvent | TouchEvent) {
       const target = e.target as Node;
       if (buttonRef.current?.contains(target)) return;
+      if (dropdownRef.current?.contains(target)) return;
       setOpen(false);
     }
     if (open) {
@@ -78,6 +80,7 @@ export function ModelSelector() {
 
   const dropdown = open ? (
     <div
+      ref={dropdownRef}
       style={{ ...dropdownStyle, touchAction: "pan-y" }}
       className="glass border border-border rounded-xl shadow-2xl bg-card"
     >
