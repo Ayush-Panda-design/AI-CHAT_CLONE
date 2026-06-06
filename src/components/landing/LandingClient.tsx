@@ -63,6 +63,18 @@ export default function LandingPage() {
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
               Production-Ready AI Chat Platform
             </div>
+            <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 text-sm text-cyan-400 mb-8">
+  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+  Production-Ready AI Chat Platform
+</div>
+
+{/* ✅ Add this */}
+<div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-sm text-emerald-400 mb-6">
+  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+  💡 Use free models like <span className="font-semibold">Owl Alpha</span>, <span className="font-semibold">MoonshotAI</span> or <span className="font-semibold">Zai: GLM</span> to get started — no payment needed
+</div>
+
+<h1 className="text-5xl md:text-7xl font-bold ...">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
               Chat with the world&apos;s<br />
               <span className="text-gradient">best AI models</span>
