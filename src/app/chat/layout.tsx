@@ -10,18 +10,19 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      setChecking(false);
-      return;
-    }
-    // Not in store — try restoring from cookie (Google OAuth flow)
     initAuth().then((ok) => {
       if (!ok) router.push("/auth/login");
       setChecking(false);
     });
   }, []);
 
-  if (checking) return null; // avoid flash redirect
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!isAuthenticated) return null;
 
