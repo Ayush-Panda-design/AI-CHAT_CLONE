@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Search, Pin, Trash2, Edit2, Settings,
-  MessageSquare, ChevronLeft, Zap, LogOut, User
+  MessageSquare, ChevronLeft, Zap, LogOut, User, X
 } from "lucide-react";
 import { useChats } from "@/hooks/useChats";
 import { useAuthStore } from "@/store/authStore";
@@ -21,6 +21,7 @@ export function Sidebar() {
   const { user, logout } = useAuthStore();
   const { chats, isLoading, createChat, deleteChat, renameChat, pinChat } = useChats();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
@@ -31,6 +32,11 @@ export function Sidebar() {
 
   const pinned = filtered.filter(c => c.isPinned);
   const recent = filtered.filter(c => !c.isPinned);
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   async function handleNewChat() {
     const chat = await createChat();
@@ -55,11 +61,15 @@ export function Sidebar() {
     router.push("/auth/login");
   }
 
-  return (
-    <motion.aside
-      animate={{ width: collapsed ? 64 : 280 }}
-      className="flex flex-col h-full bg-card border-r border-border relative z-10 flex-shrink-0"
-    >
+  // Expose toggle for ChatHeader via a global event
+  useEffect(() => {
+    function handler() { setMobileOpen(prev => !prev); }
+    window.addEventListener("toggle-sidebar", handler);
+    return () => window.removeEventListener("toggle-sidebar", handler);
+  }, []);
+
+  const sidebarContent = (
+    <>
       {/* Header */}
       <div className="p-3 flex items-center justify-between border-b border-border">
         {!collapsed && (
@@ -70,13 +80,21 @@ export function Sidebar() {
             <span className="font-bold text-sm text-gradient">NexusAI</span>
           </Link>
         )}
+        {/* Desktop collapse button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={cn("p-1.5 rounded-lg hover:bg-secondary transition-colors", collapsed && "mx-auto")}
+          className={cn("p-1.5 rounded-lg hover:bg-secondary transition-colors hidden md:block", collapsed && "mx-auto")}
         >
           <motion.div animate={{ rotate: collapsed ? 180 : 0 }}>
             <ChevronLeft className="w-4 h-4" />
           </motion.div>
+        </button>
+        {/* Mobile close button */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="p-1.5 rounded-lg hover:bg-secondary transition-colors md:hidden"
+        >
+          <X className="w-4 h-4" />
         </button>
       </div>
 
@@ -203,7 +221,43 @@ export function Sidebar() {
           </div>
         )}
       </div>
-    </motion.aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <motion.aside
+        animate={{ width: collapsed ? 64 : 280 }}
+        className="hidden md:flex flex-col h-full bg-card border-r border-border relative z-10 flex-shrink-0"
+      >
+        {sidebarContent}
+      </motion.aside>
+
+      {/* Mobile Overlay + Sidebar */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+              className="fixed inset-0 bg-black/60 z-40 md:hidden"
+            />
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed inset-y-0 left-0 w-[280px] flex flex-col bg-card border-r border-border z-50 md:hidden"
+            >
+              {sidebarContent}
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
