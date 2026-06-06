@@ -58,7 +58,7 @@ function ArchDiagram() {
     { from: "api", to: "openrouter", label: "prompt" },
     { from: "api", to: "mongo", label: "save" },
   ];
-  const getCenter = (id) => { const n = nodes.find(x => x.id === id); return { x: n.x + n.w / 2, y: n.y + n.h / 2 }; };
+  const getCenter = (id: string) => { const n = nodes.find(x => x.id === id)!; return { x: n.x + n.w / 2, y: n.y + n.h / 2 }; };
   const activeNode = active ? nodes.find(n => n.id === active) : null;
 
   return (
@@ -231,7 +231,7 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollTo = (id) => {
+  const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   };
@@ -285,15 +285,15 @@ export default function LandingPage() {
             <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
               {["features","models","pricing","faq"].map(id => (
                 <button key={id} onClick={() => scrollTo(id)} style={{ background: "none", border: "none", color: "rgba(148,163,184,0.8)", fontSize: 14, fontWeight: 500, textTransform: "capitalize", display: window.innerWidth < 768 ? "none" : "block", transition: "color 0.2s" }}
-                  onMouseOver={e => e.target.style.color = "#e2e8f0"} onMouseOut={e => e.target.style.color = "rgba(148,163,184,0.8)"}>{id}</button>
+                  onMouseOver={e => (e.target as HTMLElement).style.color = "#e2e8f0"} onMouseOut={e => (e.target as HTMLElement).style.color = "rgba(148,163,184,0.8)"}>{id}</button>
               ))}
               <a href="#" style={{ padding: "8px 18px", borderRadius: 8, border: "1px solid rgba(51,65,85,0.7)", fontSize: 13, fontWeight: 500, color: "rgba(203,213,225,0.8)", background: "transparent", transition: "all 0.2s" }}
-                onMouseOver={e => { e.target.style.borderColor = "rgba(6,182,212,0.4)"; e.target.style.color = "#06b6d4"; }}
-                onMouseOut={e => { e.target.style.borderColor = "rgba(51,65,85,0.7)"; e.target.style.color = "rgba(203,213,225,0.8)"; }}>
+                onMouseOver={e => { (e.target as HTMLElement).style.borderColor = "rgba(6,182,212,0.4)"; (e.target as HTMLElement).style.color = "#06b6d4"; }}
+                onMouseOut={e => { (e.target as HTMLElement).style.borderColor = "rgba(51,65,85,0.7)"; (e.target as HTMLElement).style.color = "rgba(203,213,225,0.8)"; }}>
                 Login
               </a>
               <a href="#" style={{ padding: "8px 18px", borderRadius: 8, background: "linear-gradient(135deg,#06b6d4,#0ea5e9)", color: "#000", fontSize: 13, fontWeight: 700, transition: "opacity 0.2s" }}
-                onMouseOver={e => e.target.style.opacity = "0.88"} onMouseOut={e => e.target.style.opacity = "1"}>
+                onMouseOver={e => (e.target as HTMLElement).style.opacity = "0.88"} onMouseOut={e => (e.target as HTMLElement).style.opacity = "1"}>
                 Get Started →
               </a>
             </div>
@@ -559,7 +559,7 @@ export default function LandingPage() {
             <div style={{ display: "flex", gap: 24 }}>
               {["Privacy","Terms","GitHub","Docs"].map(l => (
                 <a key={l} href="#" style={{ fontSize: 13, color: "rgba(100,116,139,0.8)", transition: "color 0.2s" }}
-                  onMouseOver={e => e.target.style.color = "#94a3b8"} onMouseOut={e => e.target.style.color = "rgba(100,116,139,0.8)"}>{l}</a>
+                  onMouseOver={e => (e.target as HTMLElement).style.color = "#94a3b8"} onMouseOut={e => (e.target as HTMLElement).style.color = "rgba(100,116,139,0.8)"}>{l}</a>
               ))}
             </div>
             <div style={{ fontSize: 12, color: "rgba(100,116,139,0.6)" }}>© 2026 AduraAI. MIT License.</div>
