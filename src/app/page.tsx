@@ -40,7 +40,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center">
               <Zap className="w-4 h-4 text-black" />
             </div>
-            <span className="text-gradient">NexusAI</span>
+            <span className="text-gradient">EchoAI</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             {["Features","Models","Pricing","FAQ"].map(l => (
@@ -67,17 +67,14 @@ export default function LandingPage() {
               Chat with the world&apos;s<br />
               <span className="text-gradient">best AI models</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              A fully open-source, production-grade AI chat application built with Next.js 15, 
-              streaming responses, and 100+ AI models via OpenRouter.
-            </p>
+       
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/auth/register">
                 <Button size="lg" className="glow-cyan w-full sm:w-auto">
                   Start chatting free <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
-              <a href="https://github.com" target="_blank">
+              <a href="https://github.com/Ayush-Panda-design/AI-CHAT_CLONE">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto">
                   View on GitHub
                 </Button>
@@ -280,7 +277,7 @@ export default function LandingPage() {
               <a key={l} href="#" className="hover:text-foreground transition-colors">{l}</a>
             ))}
           </div>
-          <div>© 2024 NexusAI. MIT License.</div>
+          <div>© 2026 EchoAI. MIT License.</div>
         </div>
       </footer>
     </div>
