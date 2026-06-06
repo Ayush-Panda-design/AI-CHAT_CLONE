@@ -68,10 +68,11 @@ export default function LandingPage() {
   Production-Ready AI Chat Platform
 </div>
 
-{/* ✅ Add this */}
-<div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-sm text-emerald-400 mb-6">
-  <span className="w-2 h-2 rounded-full bg-emerald-400" />
-  💡 Use free models like <span className="font-semibold">Owl Alpha</span>, <span className="font-semibold">MoonshotAI</span> or <span className="font-semibold">Zai: GLM</span> to get started — no payment needed
+<div className="flex justify-center mb-8">
+  <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-sm text-emerald-400">
+    <span className="w-2 h-2 rounded-full bg-emerald-400" />
+    💡 Use free models like <span className="font-semibold mx-1">Owl Alpha</span>, <span className="font-semibold mx-1">MoonshotAI</span> or <span className="font-semibold mx-1">Zai: GLM</span> to get started — no payment needed
+  </div>
 </div>
 
 <h1 className="text-5xl md:text-7xl font-bold ...">
