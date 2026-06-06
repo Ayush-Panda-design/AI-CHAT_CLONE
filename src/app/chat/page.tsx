@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 const suggestions = [
   { icon: Code, label: "Write a React component", prompt: "Write a React component for a responsive navigation bar with dark mode support" },
-  { icon: Lightbulb, label: "Brainstorm ideas", prompt: "Give me 10 creative startup ideas in the AI space for 2025" },
+  { icon: Lightbulb, label: "Brainstorm ideas", prompt: "Give me 10 creative startup ideas in the AI space for 2026" },
   { icon: Globe, label: "Translate text", prompt: "Translate the following text to Spanish, French, and German: 'Hello, how are you?'" },
   { icon: MessageSquare, label: "Summarize content", prompt: "Summarize the key points from a long article about quantum computing" },
 ];
