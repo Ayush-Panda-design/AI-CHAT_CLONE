@@ -70,7 +70,7 @@ export function Sidebar() {
             <div className="w-7 h-7 rounded-lg bg-cyan-500 flex items-center justify-center flex-shrink-0">
               <Zap className="w-3.5 h-3.5 text-black" />
             </div>
-            <span className="font-bold text-sm text-gradient">NexusAI</span>
+            <span className="font-bold text-sm text-gradient">AduraAI</span>
           </Link>
         )}
         {isMobile ? (
