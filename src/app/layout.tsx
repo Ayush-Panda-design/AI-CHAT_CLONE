@@ -8,7 +8,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>NexusAI – Intelligent Conversations</title>
+        <title>EchoAI – Intelligent Conversations</title>
         <meta name="description" content="Production-grade AI chat powered by OpenRouter" />
         <link rel="icon" href="/favicon.ico" />
       </head>
