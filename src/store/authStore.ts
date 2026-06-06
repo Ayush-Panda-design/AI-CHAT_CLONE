@@ -11,11 +11,12 @@ interface AuthState {
   logout: () => void;
   setAccessToken: (token: string) => void;
   updateUser: (user: Partial<User>) => void;
+  initAuth: () => Promise<boolean>;  // ← add this
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       accessToken: null,
       isAuthenticated: false,
@@ -23,6 +24,17 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ user: null, accessToken: null, isAuthenticated: false }),
       setAccessToken: (accessToken) => set({ accessToken }),
       updateUser: (updates) => set(s => ({ user: s.user ? { ...s.user, ...updates } : null })),
+      initAuth: async () => {
+        try {
+          const res = await fetch("/api/auth/me", { credentials: "include" });
+          if (!res.ok) return false;
+          const json = await res.json();
+          set({ user: json.user, accessToken: json.accessToken ?? null, isAuthenticated: true });
+          return true;
+        } catch {
+          return false;
+        }
+      },
     }),
     { name: "auth-store", partialize: s => ({ user: s.user, accessToken: s.accessToken, isAuthenticated: s.isAuthenticated }) }
   )
