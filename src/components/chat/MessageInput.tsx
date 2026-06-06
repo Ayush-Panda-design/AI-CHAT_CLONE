@@ -88,7 +88,7 @@ export function MessageInput({ onSend, isStreaming, onAbort }: Props) {
               value={value}
               onChange={e => { setValue(e.target.value); adjustHeight(); }}
               onKeyDown={handleKeyDown}
-              placeholder="Message NexusAI... (Shift+Enter for newline)"
+              placeholder="Message AduraAI... (Shift+Enter for newline)"
               rows={1}
               className="w-full bg-transparent resize-none outline-none text-sm placeholder:text-muted-foreground leading-6 max-h-48 overflow-y-auto"
             />
