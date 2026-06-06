@@ -59,10 +59,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(6,182,212,0.08),transparent)]" />
         <div className="max-w-4xl mx-auto text-center relative">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 text-sm text-cyan-400 mb-8">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-              Production-Ready AI Chat Platform
-            </div>
+          
             <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 text-sm text-cyan-400 mb-8">
   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
   Production-Ready AI Chat Platform
@@ -75,7 +72,7 @@ export default function LandingPage() {
   </div>
 </div>
 
-<h1 className="text-5xl md:text-7xl font-bold ...">
+
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
               Chat with the world&apos;s<br />
               <span className="text-gradient">best AI models</span>
