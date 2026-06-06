@@ -40,7 +40,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center">
               <Zap className="w-4 h-4 text-black" />
             </div>
-            <span className="text-gradient">NexusAI</span>
+            <span className="text-gradient">AduraAI</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             {["Features","Models","Pricing","FAQ"].map(l => (
@@ -68,7 +68,7 @@ export default function LandingPage() {
               <span className="text-gradient">best AI models</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              A fully open-source, production-grade AI chat application built with Next.js 15, 
+              A fully open-source, production-grade AI chat application  
               streaming responses, and 100+ AI models via OpenRouter.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -98,7 +98,7 @@ export default function LandingPage() {
                 <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
                 <div className="w-3 h-3 rounded-full bg-emerald-500/70" />
               </div>
-              <span className="text-xs text-muted-foreground font-mono">NexusAI – GPT-4o</span>
+              <span className="text-xs text-muted-foreground font-mono">AduraAI – GPT-4o</span>
             </div>
             <div className="p-6 space-y-4 text-left min-h-48">
               <div className="flex gap-3">
