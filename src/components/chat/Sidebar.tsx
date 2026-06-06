@@ -5,25 +5,31 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Search, Pin, Trash2, Edit2, Settings,
-  MessageSquare, ChevronLeft, Zap, LogOut, User
+  MessageSquare, ChevronLeft, Zap, LogOut, X
 } from "lucide-react";
 import { useChats } from "@/hooks/useChats";
 import { useAuthStore } from "@/store/authStore";
 import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { format } from "date-fns";
 
 export function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
   const { chats, isLoading, createChat, deleteChat, renameChat, pinChat } = useChats();
+
+  // On mobile: sidebar is an overlay (mobileOpen). On desktop: collapsible sidebar.
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const filtered = chats?.filter(c =>
     c.title.toLowerCase().includes(search.toLowerCase())
@@ -55,14 +61,11 @@ export function Sidebar() {
     router.push("/auth/login");
   }
 
-  return (
-    <motion.aside
-      animate={{ width: collapsed ? 64 : 280 }}
-      className="flex flex-col h-full bg-card border-r border-border relative z-10 flex-shrink-0"
-    >
+  const sidebarContent = (isMobile = false) => (
+    <div className="flex flex-col h-full">
       {/* Header */}
       <div className="p-3 flex items-center justify-between border-b border-border">
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <Link href="/" className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-cyan-500 flex items-center justify-center flex-shrink-0">
               <Zap className="w-3.5 h-3.5 text-black" />
@@ -70,14 +73,23 @@ export function Sidebar() {
             <span className="font-bold text-sm text-gradient">NexusAI</span>
           </Link>
         )}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className={cn("p-1.5 rounded-lg hover:bg-secondary transition-colors", collapsed && "mx-auto")}
-        >
-          <motion.div animate={{ rotate: collapsed ? 180 : 0 }}>
-            <ChevronLeft className="w-4 h-4" />
-          </motion.div>
-        </button>
+        {isMobile ? (
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="p-1.5 rounded-lg hover:bg-secondary transition-colors ml-auto"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        ) : (
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className={cn("p-1.5 rounded-lg hover:bg-secondary transition-colors", collapsed && "mx-auto")}
+          >
+            <motion.div animate={{ rotate: collapsed ? 180 : 0 }}>
+              <ChevronLeft className="w-4 h-4" />
+            </motion.div>
+          </button>
+        )}
       </div>
 
       {/* New Chat */}
@@ -88,16 +100,16 @@ export function Sidebar() {
             "w-full flex items-center gap-2 rounded-xl p-2.5 text-sm font-medium",
             "bg-cyan-500/10 border border-cyan-500/20 text-cyan-400",
             "hover:bg-cyan-500/20 transition-colors",
-            collapsed && "justify-center"
+            collapsed && !isMobile && "justify-center"
           )}
         >
           <Plus className="w-4 h-4 flex-shrink-0" />
-          {!collapsed && "New Chat"}
+          {(!collapsed || isMobile) && "New Chat"}
         </button>
       </div>
 
       {/* Search */}
-      {!collapsed && (
+      {(!collapsed || isMobile) && (
         <div className="px-3 pb-3">
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
@@ -113,7 +125,7 @@ export function Sidebar() {
 
       {/* Chat List */}
       <div className="flex-1 overflow-y-auto px-3 space-y-4">
-        {!collapsed && pinned.length > 0 && (
+        {(!collapsed || isMobile) && pinned.length > 0 && (
           <div>
             <div className="text-xs text-muted-foreground font-medium mb-1.5 flex items-center gap-1">
               <Pin className="w-3 h-3" /> Pinned
@@ -135,7 +147,7 @@ export function Sidebar() {
           </div>
         )}
 
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <div>
             {pinned.length > 0 && <div className="text-xs text-muted-foreground font-medium mb-1.5">Recent</div>}
             {isLoading ? (
@@ -163,7 +175,7 @@ export function Sidebar() {
           </div>
         )}
 
-        {collapsed && (
+        {collapsed && !isMobile && (
           <div className="space-y-1">
             {chats?.slice(0, 8).map(chat => (
               <Link key={chat._id} href={`/chat/${chat._id}`}
@@ -179,7 +191,7 @@ export function Sidebar() {
 
       {/* User */}
       <div className="p-3 border-t border-border">
-        {collapsed ? (
+        {collapsed && !isMobile ? (
           <div className="flex justify-center">
             <Avatar src={user?.avatar} name={user?.name} size={32} />
           </div>
@@ -203,7 +215,58 @@ export function Sidebar() {
           </div>
         )}
       </div>
-    </motion.aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* ── Mobile: hamburger trigger rendered by parent layout, overlay drawer here ── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+              onClick={() => setMobileOpen(false)}
+            />
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed left-0 top-0 bottom-0 w-72 bg-card border-r border-border z-50 sm:hidden"
+            >
+              {sidebarContent(true)}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ── Desktop: collapsible sidebar ── */}
+      <motion.aside
+        animate={{ width: collapsed ? 64 : 280 }}
+        className="hidden sm:flex flex-col h-full bg-card border-r border-border relative z-10 flex-shrink-0"
+      >
+        {sidebarContent(false)}
+      </motion.aside>
+
+      {/* ── Mobile: slim icon bar at the bottom OR expose open trigger via context/prop ── */}
+      {/* 
+        Expose setMobileOpen so the parent layout or ChatHeader can call it.
+        A simple approach: render a floating hamburger button here when on mobile.
+      */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="sm:hidden fixed top-3 left-3 z-30 p-2 rounded-lg bg-card border border-border shadow-md"
+        aria-label="Open sidebar"
+      >
+        <Zap className="w-4 h-4 text-cyan-400" />
+      </button>
+    </>
   );
 }
 
@@ -236,18 +299,25 @@ function ChatItem({ chat, isActive, editingId, editTitle, setEditTitle, setEditi
         </Link>
       )}
 
+      {/* On mobile show actions always for active, on desktop on hover */}
       {(hovered || isActive) && editingId !== chat._id && (
         <div className="flex items-center gap-0.5">
-          <button onClick={() => { setEditingId(chat._id); setEditTitle(chat.title); }}
-            className="p-1 rounded hover:bg-secondary transition-colors">
+          <button
+            onClick={() => { setEditingId(chat._id); setEditTitle(chat.title); }}
+            className="p-1.5 rounded hover:bg-secondary transition-colors"
+          >
             <Edit2 className="w-3 h-3" />
           </button>
-          <button onClick={() => onPin(chat._id)}
-            className={cn("p-1 rounded hover:bg-secondary transition-colors", chat.isPinned && "text-cyan-400")}>
+          <button
+            onClick={() => onPin(chat._id)}
+            className={cn("p-1.5 rounded hover:bg-secondary transition-colors", chat.isPinned && "text-cyan-400")}
+          >
             <Pin className="w-3 h-3" />
           </button>
-          <button onClick={() => onDelete(chat._id)}
-            className="p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-colors">
+          <button
+            onClick={() => onDelete(chat._id)}
+            className="p-1.5 rounded hover:bg-destructive/10 hover:text-destructive transition-colors"
+          >
             <Trash2 className="w-3 h-3" />
           </button>
         </div>
