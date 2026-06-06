@@ -48,6 +48,15 @@ export async function POST(req: NextRequest) {
       accessToken,
     });
 
+    // ✅ Set accessToken cookie — overwrites any existing Google OAuth cookie
+    res.cookies.set("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 15 * 60,
+      path: "/",
+    });
+
     res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
