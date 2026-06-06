@@ -55,11 +55,11 @@ export function Sidebar() {
     setEditingId(null);
   }
 
-  async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    logout();
-    router.push("/auth/login");
-  }
+ async function handleLogout() {
+  await fetch("/api/auth/logout", { method: "POST" });
+  logout(); // this now also clears localStorage
+  router.push("/auth/login");
+}
 
   const sidebarContent = (isMobile = false) => (
     <div className="flex flex-col h-full">
