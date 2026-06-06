@@ -89,11 +89,7 @@ export default function LoginPage() {
             {errors.password && <p className="text-destructive text-xs mt-1">{errors.password.message}</p>}
           </div>
 
-          <div className="flex justify-end">
-            <Link href="/auth/forgot-password" className="text-xs text-cyan-400 hover:text-cyan-300">
-              Forgot password?
-            </Link>
-          </div>
+          
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
