@@ -40,7 +40,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center">
               <Zap className="w-4 h-4 text-black" />
             </div>
-            <span className="text-gradient">EchoAI</span>
+            <span className="text-gradient">AduraAI</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             {["Features","Models","Pricing","FAQ"].map(l => (
@@ -277,7 +277,7 @@ export default function LandingPage() {
               <a key={l} href="#" className="hover:text-foreground transition-colors">{l}</a>
             ))}
           </div>
-          <div>© 2026 EchoAI. MIT License.</div>
+          <div>© 2026 AduraAI. MIT License.</div>
         </div>
       </footer>
     </div>
