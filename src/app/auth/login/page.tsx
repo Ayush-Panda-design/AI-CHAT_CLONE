@@ -67,7 +67,7 @@ export default function LoginPage() {
             <div className="w-9 h-9 rounded-xl bg-cyan-500 flex items-center justify-center">
               <Zap className="w-5 h-5 text-black" />
             </div>
-            <span className="text-gradient">EchoAI</span>
+            <span className="text-gradient">AduraAI</span>
           </Link>
           <h1 className="text-2xl font-bold">Welcome back</h1>
           <p className="text-muted-foreground text-sm mt-1">Sign in to your account</p>
