@@ -56,7 +56,7 @@ export default function RegisterPage() {
             <div className="w-9 h-9 rounded-xl bg-cyan-500 flex items-center justify-center">
               <Zap className="w-5 h-5 text-black" />
             </div>
-            <span className="text-gradient">NexusAI</span>
+            <span className="text-gradient">AduraAI</span>
           </Link>
           <h1 className="text-2xl font-bold">Create account</h1>
           <p className="text-muted-foreground text-sm mt-1">Start chatting with AI models</p>
