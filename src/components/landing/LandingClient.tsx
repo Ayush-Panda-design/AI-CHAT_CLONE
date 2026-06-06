@@ -33,6 +33,7 @@ const faqs = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+
       {/* Nav */}
       <nav className="fixed top-0 inset-x-0 z-50 glass border-b border-border/50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -43,13 +44,21 @@ export default function LandingPage() {
             <span className="text-gradient">AduraAI</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-            {["Features","Models","Pricing","FAQ"].map(l => (
-              <a key={l} href={`#${l.toLowerCase()}`} className="hover:text-foreground transition-colors">{l}</a>
+            {["Features", "Models", "Pricing", "FAQ"].map((l) => (
+              <a key={l} href={`#${l.toLowerCase()}`} className="hover:text-foreground transition-colors">
+                {l}
+              </a>
             ))}
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/auth/login"><Button variant="ghost" size="sm">Login</Button></Link>
-            <Link href="/auth/register"><Button size="sm">Get Started <ArrowRight className="ml-1 w-3 h-3"/></Button></Link>
+            <Link href="/auth/login">
+              <Button variant="ghost" size="sm">Login</Button>
+            </Link>
+            <Link href="/auth/register">
+              <Button size="sm">
+                Get Started <ArrowRight className="ml-1 w-3 h-3" />
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -58,27 +67,34 @@ export default function LandingPage() {
       <section className="pt-32 pb-20 px-6 relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(6,182,212,0.08),transparent)]" />
         <div className="max-w-4xl mx-auto text-center relative">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          
-            <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 text-sm text-cyan-400 mb-8">
-  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-  Production-Ready AI Chat Platform
-</div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Badge 1: Production-Ready */}
+            <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 text-sm text-cyan-400 mb-4">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              Production-Ready AI Chat Platform
+            </div>
 
-<div className="flex justify-center mb-8">
-  <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-sm text-emerald-400">
-    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-    💡 Use free models like <span className="font-semibold mx-1">Owl Alpha</span>, <span className="font-semibold mx-1">MoonshotAI</span> or <span className="font-semibold mx-1">Zai: GLM</span> to get started — no payment needed
-  </div>
-</div>
-
+            {/* Badge 2: Free Models */}
+            <div className="flex justify-center mb-8">
+              <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-sm text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                💡 Use free models like{" "}
+                <span className="font-semibold mx-1">Owl Alpha</span>,{" "}
+                <span className="font-semibold mx-1">MoonshotAI</span> or{" "}
+                <span className="font-semibold mx-1">Zai: GLM</span> to get started — no payment needed
+              </div>
+            </div>
 
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
               Chat with the world&apos;s<br />
               <span className="text-gradient">best AI models</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              A fully open-source, production-grade AI chat application  
+              A fully open-source, production-grade AI chat application with
               streaming responses, and 100+ AI models via OpenRouter.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -87,7 +103,7 @@ export default function LandingPage() {
                   Start chatting free <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
-              <a href="https://github.com" target="_blank">
+              <a href="https://github.com" target="_blank" rel="noreferrer">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto">
                   View on GitHub
                 </Button>
@@ -112,7 +128,9 @@ export default function LandingPage() {
             </div>
             <div className="p-6 space-y-4 text-left min-h-48">
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-secondary flex-shrink-0 flex items-center justify-center text-xs font-bold">U</div>
+                <div className="w-8 h-8 rounded-full bg-secondary flex-shrink-0 flex items-center justify-center text-xs font-bold">
+                  U
+                </div>
                 <div className="bg-secondary rounded-2xl rounded-tl-sm px-4 py-3 text-sm max-w-md">
                   Explain quantum entanglement in simple terms
                 </div>
@@ -122,14 +140,16 @@ export default function LandingPage() {
                   <Zap className="w-3.5 h-3.5 text-cyan-400" />
                 </div>
                 <div className="bg-card border border-border rounded-2xl rounded-tl-sm px-4 py-3 text-sm max-w-lg leading-relaxed">
-                  Quantum entanglement is like having two magic coins 🪙 — when you flip one and it lands heads, 
-                  the other instantly lands tails, <span className="text-cyan-400">no matter how far apart they are</span>...
+                  Quantum entanglement is like having two magic coins 🪙 — when you flip one and it lands heads,
+                  the other instantly lands tails,{" "}
+                  <span className="text-cyan-400">no matter how far apart they are</span>...
                   <span className="inline-block w-0.5 h-4 bg-cyan-400 ml-1 animate-pulse align-middle" />
                 </div>
               </div>
             </div>
           </motion.div>
         </div>
+
         <div className="flex justify-center mt-16">
           <ChevronDown className="w-6 h-6 text-muted-foreground animate-bounce" />
         </div>
@@ -167,11 +187,19 @@ export default function LandingPage() {
       <section id="models" className="py-24 px-6 bg-card/30">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-4">100+ AI Models</h2>
-          <p className="text-muted-foreground mb-12">Access the world&apos;s best models through a single interface</p>
+          <p className="text-muted-foreground mb-12">
+            Access the world&apos;s best models through a single interface
+          </p>
           <div className="flex flex-wrap justify-center gap-3">
-            {["GPT-4o","GPT-4 Turbo","Claude 3.5 Sonnet","Claude 3 Opus","Gemini 1.5 Pro",
-              "Llama 3 70B","Mistral Large","DeepSeek V2","Qwen 2 72B","Phi-3 Medium"].map(m => (
-              <div key={m} className="glass rounded-full px-5 py-2 text-sm border border-border/80 hover:border-cyan-500/40 hover:text-cyan-400 transition-all cursor-default">
+            {[
+              "GPT-4o", "GPT-4 Turbo", "Claude 3.5 Sonnet", "Claude 3 Opus",
+              "Gemini 1.5 Pro", "Llama 3 70B", "Mistral Large", "DeepSeek V2",
+              "Qwen 2 72B", "Phi-3 Medium",
+            ].map((m) => (
+              <div
+                key={m}
+                className="glass rounded-full px-5 py-2 text-sm border border-border/80 hover:border-cyan-500/40 hover:text-cyan-400 transition-all cursor-default"
+              >
                 {m}
               </div>
             ))}
@@ -196,9 +224,13 @@ export default function LandingPage() {
                 className="glass rounded-2xl p-6"
               >
                 <div className="flex mb-4">
-                  {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-cyan-400 text-cyan-400" />)}
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-cyan-400 text-cyan-400" />
+                  ))}
                 </div>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                  &ldquo;{t.text}&rdquo;
+                </p>
                 <div>
                   <div className="font-semibold text-sm">{t.name}</div>
                   <div className="text-xs text-muted-foreground">{t.role}</div>
@@ -223,7 +255,11 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className={`rounded-2xl p-8 flex flex-col relative ${p.popular ? "bg-cyan-500/10 border-2 border-cyan-500/50 glow-cyan" : "glass"}`}
+                className={`rounded-2xl p-8 flex flex-col relative ${
+                  p.popular
+                    ? "bg-cyan-500/10 border-2 border-cyan-500/50 glow-cyan"
+                    : "glass"
+                }`}
               >
                 {p.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-cyan-500 text-black text-xs font-bold px-3 py-1 rounded-full">
@@ -232,10 +268,13 @@ export default function LandingPage() {
                 )}
                 <div className="mb-6">
                   <div className="text-sm text-muted-foreground mb-1">{p.name}</div>
-                  <div className="text-4xl font-bold">{p.price}<span className="text-muted-foreground text-lg font-normal">/mo</span></div>
+                  <div className="text-4xl font-bold">
+                    {p.price}
+                    <span className="text-muted-foreground text-lg font-normal">/mo</span>
+                  </div>
                 </div>
                 <ul className="space-y-3 flex-1 mb-8">
-                  {p.features.map(f => (
+                  {p.features.map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm">
                       <div className="w-4 h-4 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
                         <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
@@ -283,16 +322,19 @@ export default function LandingPage() {
             <div className="w-6 h-6 rounded bg-cyan-500 flex items-center justify-center">
               <Zap className="w-3 h-3 text-black" />
             </div>
-            NexusAI
+            AduraAI
           </div>
           <div className="flex gap-6">
-            {["Privacy","Terms","GitHub","Docs"].map(l => (
-              <a key={l} href="#" className="hover:text-foreground transition-colors">{l}</a>
+            {["Privacy", "Terms", "GitHub", "Docs"].map((l) => (
+              <a key={l} href="#" className="hover:text-foreground transition-colors">
+                {l}
+              </a>
             ))}
           </div>
-          <div>© 2026 NexusAI. MIT License.</div>
+          <div>© 2026 AduraAI. MIT License.</div>
         </div>
       </footer>
+
     </div>
   );
 }
