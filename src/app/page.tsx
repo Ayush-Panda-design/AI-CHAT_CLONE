@@ -270,7 +270,7 @@ export default function LandingPage() {
             <div className="w-6 h-6 rounded bg-cyan-500 flex items-center justify-center">
               <Zap className="w-3 h-3 text-black" />
             </div>
-            NexusAI
+            AduraAI
           </div>
           <div className="flex gap-6">
             {["Privacy","Terms","GitHub","Docs"].map(l => (
