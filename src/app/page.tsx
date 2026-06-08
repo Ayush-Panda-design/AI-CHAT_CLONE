@@ -38,7 +38,17 @@ const FAQS = [
   { q:"How does streaming work?",       a:"We use Server-Sent Events with ReadableStream from OpenRouter, giving you real-time token streaming with full abort support." },
 ];
 
-const MODELS = [
+interface ModelData {
+  name: string;
+  vendor: string;
+  speed: number;
+  quality: number;
+  ctx: string;
+  color: string;
+  icon: string;
+}
+
+const MODELS: ModelData[] = [
   { name:"GPT-4o",           vendor:"OpenAI",    speed:98, quality:96, ctx:"128k", color:"#ec4899", icon:"🟢" },
   { name:"Claude 3.5 Sonnet",vendor:"Anthropic", speed:91, quality:97, ctx:"200k", color:"#f43f5e", icon:"🔴" },
   { name:"Gemini 1.5 Pro",   vendor:"Google",    speed:88, quality:94, ctx:"1M",   color:"#fb7185", icon:"🟠" },
@@ -57,7 +67,7 @@ const ARCH_NODES = [
   { id:"openr",   label:"OpenRouter",      x:50,  y:80,  icon:"🌐", color:"#ec4899" },
   { id:"cache",   label:"Redis Cache",     x:82,  y:80,  icon:"⚡", color:"#fb7185" },
 ];
-const ARCH_EDGES = [
+const ARCH_EDGES: [string, string][] = [
   ["client","auth"],["client","api"],["client","stream"],
   ["api","router"],["auth","mongo"],["router","openr"],
   ["stream","cache"],["api","mongo"],["router","cache"],
@@ -66,7 +76,16 @@ const ARCH_EDGES = [
 const CHAT_WORDS = "Quantum entanglement is like having two magic coins — when you flip one and it lands heads, the other instantly lands tails, no matter how far apart they are...".split(" ");
 
 /* ─── MICRO COMPONENTS ─── */
-function Particle({ x, y, size, dur, delay, color }) {
+interface ParticleProps {
+  x: number;
+  y: number;
+  size: number;
+  dur: number;
+  delay: number;
+  color: string;
+}
+
+function Particle({ x, y, size, dur, delay, color }: ParticleProps) {
   return (
     <motion.div style={{ position:"absolute", left:`${x}%`, top:`${y}%`, width:size, height:size,
                          borderRadius:"50%", background:color, pointerEvents:"none" }}
@@ -75,7 +94,11 @@ function Particle({ x, y, size, dur, delay, color }) {
   );
 }
 
-function TypingText({ words }) {
+interface TypingTextProps {
+  words: string[];
+}
+
+function TypingText({ words }: TypingTextProps) {
   const [shown, setShown] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setShown(p => p < words.length ? p+1 : p), 75);
@@ -83,7 +106,7 @@ function TypingText({ words }) {
   }, [words.length]);
   return (
     <>
-      {words.slice(0, shown).map((w,i) => (
+      {words.slice(0, shown).map((w, i) => (
         <motion.span key={i} initial={{ opacity:0, y:6, filter:"blur(3px)" }}
           animate={{ opacity:1, y:0, filter:"blur(0px)" }} transition={{ duration:0.25 }}
           style={{ marginRight:"4px", display:"inline-block" }}>{w}</motion.span>
@@ -97,7 +120,14 @@ function TypingText({ words }) {
   );
 }
 
-function OrbitRing({ size, dur, delay, dotColor }) {
+interface OrbitRingProps {
+  size: number;
+  dur: number;
+  delay: number;
+  dotColor: string;
+}
+
+function OrbitRing({ size, dur, delay, dotColor }: OrbitRingProps) {
   return (
     <motion.div style={{ position:"absolute", width:size, height:size, borderRadius:"50%",
                          border:`1px dashed ${dotColor}22`, top:"50%", left:"50%",
@@ -112,7 +142,7 @@ function OrbitRing({ size, dur, delay, dotColor }) {
 
 /* ─── ARCH DIAGRAM (SVG-based, animated) ─── */
 function ArchDiagram() {
-  const [activeNode, setActiveNode] = useState(null);
+  const [activeNode, setActiveNode] = useState<string | null>(null);
   const [pulse, setPulse] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setPulse(p => (p+1) % ARCH_EDGES.length), 900);
@@ -120,8 +150,8 @@ function ArchDiagram() {
   }, []);
 
   const W = 520, H = 340;
-  const nx = id => ARCH_NODES.find(n=>n.id===id).x / 100 * W;
-  const ny = id => ARCH_NODES.find(n=>n.id===id).y / 100 * H;
+  const nx = (id: string) => (ARCH_NODES.find(n => n.id === id)!.x / 100) * W;
+  const ny = (id: string) => (ARCH_NODES.find(n => n.id === id)!.y / 100) * H;
 
   return (
     <motion.div initial={{ opacity:0, y:40 }} whileInView={{ opacity:1, y:0 }}
@@ -138,8 +168,7 @@ function ArchDiagram() {
           </filter>
         </defs>
 
-        {/* Edges */}
-        {ARCH_EDGES.map(([a,b], i) => {
+        {ARCH_EDGES.map(([a, b], i) => {
           const active = pulse === i;
           return (
             <g key={i}>
@@ -148,8 +177,8 @@ function ArchDiagram() {
                 strokeDasharray={active ? "none" : "4 4"} />
               {active && (
                 <motion.circle r={4} fill={P.pink} filter="url(#glow)"
-                  initial={{ offsetDistance:"0%", opacity:1 }}
-                  animate={{ offsetDistance:"100%", opacity:[1,1,0] }}
+                  initial={{ opacity:1 }}
+                  animate={{ opacity:[1,1,0] }}
                   transition={{ duration:0.9, ease:"easeInOut" }}
                   style={{
                     offsetPath:`path('M ${nx(a)} ${ny(a)} L ${nx(b)} ${ny(b)}')`,
@@ -163,7 +192,6 @@ function ArchDiagram() {
           );
         })}
 
-        {/* Nodes */}
         {ARCH_NODES.map((node, i) => {
           const isActive = activeNode === node.id;
           return (
@@ -205,9 +233,8 @@ function ArchDiagram() {
         })}
       </svg>
 
-      {/* Legend */}
       <div style={{ display:"flex", gap:24, marginTop:14, flexWrap:"wrap" }}>
-        {[["Data flow","solid line"],["Signal packet","pink dot"],["Hover node","for details"]].map(([k,v])=>(
+        {[["Data flow","solid line"],["Signal packet","pink dot"],["Hover node","for details"]].map(([k, v]) => (
           <div key={k} style={{ fontSize:11, color:P.muted, display:"flex", alignItems:"center", gap:6 }}>
             <span style={{ width:16, height:1.5, background:P.pink, display:"inline-block", borderRadius:1 }} />
             <span style={{ color:P.sub }}>{k}</span> <span style={{ color:P.muted }}>— {v}</span>
@@ -221,15 +248,14 @@ function ArchDiagram() {
 /* ─── MODEL CARDS with animated bars ─── */
 function ModelCards() {
   const [active, setActive] = useState(0);
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once:true });
 
   return (
     <div ref={ref}>
-      {/* Selector tabs */}
       <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:24 }}>
-        {MODELS.map((m,i)=>(
-          <motion.button key={m.name} onClick={()=>setActive(i)}
+        {MODELS.map((m, i) => (
+          <motion.button key={m.name} onClick={() => setActive(i)}
             whileHover={{ scale:1.05 }} whileTap={{ scale:0.97 }}
             style={{ padding:"8px 16px", borderRadius:100, fontSize:13, fontWeight:600, cursor:"pointer",
                      border: active===i ? `1px solid ${P.borderPk}` : `1px solid ${P.border}`,
@@ -240,7 +266,6 @@ function ModelCards() {
         ))}
       </div>
 
-      {/* Active model detail */}
       <AnimatePresence mode="wait">
         <motion.div key={active}
           initial={{ opacity:0, y:16, scale:0.97 }} animate={{ opacity:1, y:0, scale:1 }}
@@ -265,7 +290,7 @@ function ModelCards() {
               </div>
             </div>
             <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-              {[["Context", MODELS[active].ctx], ["Speed", `${MODELS[active].speed}/100`], ["Quality", `${MODELS[active].quality}/100`]].map(([k,v])=>(
+              {([["Context", MODELS[active].ctx], ["Speed", `${MODELS[active].speed}/100`], ["Quality", `${MODELS[active].quality}/100`]] as [string, string][]).map(([k, v]) => (
                 <div key={k} style={{ background:"rgba(255,255,255,0.04)", border:`1px solid ${P.border}`,
                                       borderRadius:10, padding:"8px 14px", textAlign:"center" }}>
                   <div style={{ fontSize:11, color:P.muted, marginBottom:2 }}>{k}</div>
@@ -275,8 +300,7 @@ function ModelCards() {
             </div>
           </div>
 
-          {/* Animated stat bars */}
-          {[["Speed",MODELS[active].speed,P.pink],["Quality",MODELS[active].quality,P.coral],["Availability",94,P.rose]].map(([label, val, col])=>(
+          {([["Speed", MODELS[active].speed, P.pink], ["Quality", MODELS[active].quality, P.coral], ["Availability", 94, P.rose]] as [string, number, string][]).map(([label, val, col]) => (
             <div key={label} style={{ marginBottom:18 }}>
               <div style={{ display:"flex", justifyContent:"space-between", marginBottom:7,
                             fontSize:13, color:P.sub }}>
@@ -296,7 +320,6 @@ function ModelCards() {
             </div>
           ))}
 
-          {/* Live token stream preview */}
           <div style={{ marginTop:24, background:"rgba(0,0,0,0.25)", borderRadius:12, padding:16,
                         fontFamily:"monospace", fontSize:12, color:P.sub, position:"relative",
                         border:`1px solid rgba(236,72,120,0.12)` }}>
@@ -306,10 +329,9 @@ function ModelCards() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Mini model grid */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(150px,1fr))", gap:10, marginTop:16 }}>
-        {MODELS.map((m,i)=>(
-          <motion.div key={m.name} onClick={()=>setActive(i)}
+        {MODELS.map((m, i) => (
+          <motion.div key={m.name} onClick={() => setActive(i)}
             whileHover={{ y:-4, scale:1.03, borderColor:P.borderPk }}
             style={{ background: active===i ? `${P.pink}10` : "rgba(255,255,255,0.025)",
                      border: active===i ? `1px solid ${P.borderPk}` : `1px solid ${P.border}`,
@@ -330,8 +352,13 @@ function ModelCards() {
   );
 }
 
-function TokenStream({ model, inView }) {
-  const responses = {
+interface TokenStreamProps {
+  model: ModelData;
+  inView: boolean;
+}
+
+function TokenStream({ model, inView }: TokenStreamProps) {
+  const responses: Record<string, string> = {
     "GPT-4o": "I can help you with code, analysis, creative writing, math, and much more. What would you like to explore today?",
     "Claude 3.5 Sonnet": "I'm here to assist with thoughtful, nuanced responses. I excel at reasoning, coding, and long-form analysis.",
     "Gemini 1.5 Pro": "With my 1M token context window, I can process entire codebases, books, or datasets in a single conversation.",
@@ -359,7 +386,7 @@ function TokenStream({ model, inView }) {
   return (
     <span style={{ lineHeight:1.7 }}>
       <span style={{ color:P.pink, marginRight:6 }}>{model.name}:</span>
-      {words.slice(0,shown).map((w,i)=>(
+      {words.slice(0, shown).map((w, i) => (
         <motion.span key={i} initial={{ opacity:0 }} animate={{ opacity:1 }}
           transition={{ duration:0.15 }} style={{ marginRight:"4px" }}>{w}</motion.span>
       ))}
@@ -388,6 +415,14 @@ function FlowDiagram() {
     { icon:"🌊", label:"Stream to browser",    color:P.pink   },
   ];
 
+  const stepDescs = [
+    " — Your message is captured and sent securely over HTTPS.",
+    " — JWT token validated; rate limits enforced per user tier.",
+    " — The model router picks the optimal AI based on your config.",
+    " — Encrypted request dispatched to OpenRouter's inference API.",
+    " — Tokens stream back in real-time via Server-Sent Events.",
+  ];
+
   return (
     <motion.div initial={{ opacity:0, y:40 }} whileInView={{ opacity:1, y:0 }}
       viewport={{ once:true }} transition={{ duration:0.8 }}
@@ -397,7 +432,7 @@ function FlowDiagram() {
                     textTransform:"uppercase", marginBottom:24 }}>Request Flow</div>
 
       <div style={{ display:"flex", alignItems:"center", gap:0, overflowX:"auto", paddingBottom:8 }}>
-        {steps.map((s,i)=>(
+        {steps.map((s, i) => (
           <div key={i} style={{ display:"flex", alignItems:"center", flexShrink:0 }}>
             <motion.div
               animate={{
@@ -440,7 +475,6 @@ function FlowDiagram() {
         ))}
       </div>
 
-      {/* Step description */}
       <AnimatePresence mode="wait">
         <motion.div key={step}
           initial={{ opacity:0, x:10 }} animate={{ opacity:1, x:0 }}
@@ -449,13 +483,7 @@ function FlowDiagram() {
                    borderRadius:10, fontSize:13, color:P.sub,
                    borderLeft:`3px solid ${steps[step].color}` }}>
           Step {step+1} of 5 — <span style={{ color:P.rose, fontWeight:600 }}>{steps[step].label}</span>
-          {[
-            " — Your message is captured and sent securely over HTTPS.",
-            " — JWT token validated; rate limits enforced per user tier.",
-            " — The model router picks the optimal AI based on your config.",
-            " — Encrypted request dispatched to OpenRouter's inference API.",
-            " — Tokens stream back in real-time via Server-Sent Events.",
-          ][step]}
+          {stepDescs[step]}
         </motion.div>
       </AnimatePresence>
     </motion.div>
@@ -464,14 +492,14 @@ function FlowDiagram() {
 
 /* ─── MAIN COMPONENT ─── */
 export default function LandingPage() {
-  const [openFaq, setOpenFaq] = useState(null);
-  const [hovCard, setHovCard] = useState(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [hovCard, setHovCard] = useState<number | null>(null);
   const { scrollY } = useScroll();
   const navBg   = useTransform(scrollY, [0,80],  ["rgba(11,5,7,0)","rgba(11,5,7,0.97)"]);
   const heroY   = useTransform(scrollY, [0,500], [0,-100]);
   const heroOpa = useTransform(scrollY, [0,380], [1,0]);
 
-  const particles = Array.from({length:18},(_,i)=>({
+  const particles = Array.from({ length:18 }, (_, i) => ({
     x:Math.random()*100, y:Math.random()*100,
     size:Math.random()*5+2, dur:Math.random()*4+3, delay:Math.random()*5,
     color:[P.pink,P.coral,P.rose,P.gold][i%4],
@@ -506,7 +534,7 @@ export default function LandingPage() {
           </motion.a>
 
           <div style={{ display:"flex", gap:32, fontSize:14, color:P.sub }}>
-            {["Features","Models","Pricing","FAQ"].map((l,i)=>(
+            {["Features","Models","Pricing","FAQ"].map((l, i) => (
               <motion.a key={l} href={`#${l.toLowerCase()}`}
                 style={{ textDecoration:"none", color:"inherit" }}
                 whileHover={{ color:P.pink, y:-2 }}
@@ -533,9 +561,8 @@ export default function LandingPage() {
                         overflow:"hidden", minHeight:"100vh", display:"flex", alignItems:"center" }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 80% 55% at 50% -5%, rgba(236,72,120,0.14), transparent 70%)", pointerEvents:"none" }} />
         <div style={{ position:"absolute", inset:0, backgroundImage:`linear-gradient(${P.pink}05 1px,transparent 1px),linear-gradient(90deg,${P.pink}05 1px,transparent 1px)`, backgroundSize:"60px 60px" }} />
-        {particles.map((p,i)=><Particle key={i} {...p} />)}
+        {particles.map((p, i) => <Particle key={i} {...p} />)}
 
-        {/* Orbits */}
         <div style={{ position:"absolute", right:"4%", top:"15%", width:320, height:320 }}>
           <OrbitRing size={200} dur={12} delay={0}  dotColor={P.pink} />
           <OrbitRing size={290} dur={19} delay={-6} dotColor={P.coral} />
@@ -544,7 +571,6 @@ export default function LandingPage() {
         <motion.div style={{ maxWidth:940, margin:"0 auto", textAlign:"center",
                              position:"relative", y:heroY, opacity:heroOpa }}>
 
-          {/* Badge */}
           <motion.div initial={{ opacity:0, scale:0.75, y:24 }} animate={{ opacity:1, scale:1, y:0 }}
             transition={{ duration:0.6, type:"spring" }}
             style={{ display:"inline-flex", alignItems:"center", gap:8,
@@ -557,7 +583,7 @@ export default function LandingPage() {
 
           <h1 style={{ fontSize:"clamp(42px,7.5vw,88px)", fontWeight:900, lineHeight:1.08,
                        marginBottom:30, letterSpacing:"-0.035em", fontFamily:"'Playfair Display',serif" }}>
-            {"Chat with the world's".split(" ").map((w,i)=>(
+            {"Chat with the world's".split(" ").map((w, i) => (
               <motion.span key={i} initial={{ opacity:0, y:44, rotateX:-30 }} animate={{ opacity:1, y:0, rotateX:0 }}
                 transition={{ delay:0.25+i*0.1, duration:0.65, type:"spring", stiffness:130 }}
                 style={{ display:"inline-block", marginRight:"0.22em" }}>{w}</motion.span>
@@ -597,7 +623,7 @@ export default function LandingPage() {
 
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.6 }}
             style={{ display:"flex", gap:52, justifyContent:"center", marginTop:68, fontSize:14, color:P.muted }}>
-            {[["100+","AI Models"],["50k+","Developers"],["99.9%","Uptime"]].map(([n,l])=>(
+            {([["100+","AI Models"],["50k+","Developers"],["99.9%","Uptime"]] as [string,string][]).map(([n, l]) => (
               <div key={l} style={{ textAlign:"center" }}>
                 <motion.div whileHover={{ scale:1.12 }}
                   style={{ fontSize:30, fontWeight:900, background:P.grad,
@@ -619,7 +645,7 @@ export default function LandingPage() {
               <div style={{ background:"rgba(255,255,255,0.03)", borderBottom:`1px solid ${P.border}`,
                             padding:"13px 18px", display:"flex", alignItems:"center", gap:14 }}>
                 <div style={{ display:"flex", gap:7 }}>
-                  {["#f43f5e","#fb923c","#4ade80"].map((c,i)=>(
+                  {["#f43f5e","#fb923c","#4ade80"].map((c, i) => (
                     <motion.div key={i} style={{ width:12, height:12, borderRadius:"50%", background:c, opacity:0.75 }}
                       whileHover={{ opacity:1, scale:1.35 }} />
                   ))}
@@ -672,7 +698,7 @@ export default function LandingPage() {
                    color:P.muted, fontSize:22 }}>↓</motion.div>
       </section>
 
-      {/* ── HOW IT WORKS (Flow diagram) ── */}
+      {/* ── HOW IT WORKS ── */}
       <section style={{ padding:"100px 24px", borderTop:`1px solid ${P.border}` }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <motion.div initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
@@ -715,12 +741,12 @@ export default function LandingPage() {
             <p style={{ color:P.sub, fontSize:18 }}>Built for developers and power users alike</p>
           </motion.div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:22 }}>
-            {FEATURES.map((f,i)=>(
+            {FEATURES.map((f, i) => (
               <motion.div key={f.title}
                 initial={{ opacity:0, y:44 }} whileInView={{ opacity:1, y:0 }}
                 viewport={{ once:true }} transition={{ delay:i*0.11 }}
                 whileHover={{ y:-9, scale:1.025 }}
-                onHoverStart={()=>setHovCard(i)} onHoverEnd={()=>setHovCard(null)}
+                onHoverStart={() => setHovCard(i)} onHoverEnd={() => setHovCard(null)}
                 style={{ background:hovCard===i ? P.bgCard2 : P.bgCard,
                          border:`1px solid ${hovCard===i ? P.borderPk : P.border}`,
                          borderRadius:22, padding:30, cursor:"default",
@@ -747,7 +773,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── MODELS (animated interactive cards) ── */}
+      {/* ── MODELS ── */}
       <section id="models" style={{ padding:"120px 24px", borderTop:`1px solid ${P.border}`,
                                     borderBottom:`1px solid ${P.border}`,
                                     background:"rgba(236,72,120,0.015)" }}>
@@ -775,14 +801,14 @@ export default function LandingPage() {
                          fontFamily:"'Playfair Display',serif" }}>Loved by developers</h2>
           </motion.div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:22 }}>
-            {TESTIMONIALS.map((t,i)=>(
+            {TESTIMONIALS.map((t, i) => (
               <motion.div key={t.name}
                 initial={{ opacity:0, y:44, rotateY:-14 }} whileInView={{ opacity:1, y:0, rotateY:0 }}
                 viewport={{ once:true }} transition={{ delay:i*0.14, duration:0.7, type:"spring" }}
                 whileHover={{ y:-7, scale:1.02 }}
                 style={{ background:P.bgCard, border:`1px solid ${P.border}`, borderRadius:22, padding:30 }}>
                 <div style={{ display:"flex", gap:3, marginBottom:20 }}>
-                  {Array(5).fill(0).map((_,j)=>(
+                  {Array(5).fill(0).map((_: number, j: number) => (
                     <motion.span key={j} initial={{ opacity:0, scale:0 }}
                       whileInView={{ opacity:1, scale:1 }} viewport={{ once:true }}
                       transition={{ delay:0.28+i*0.08+j*0.06 }} style={{ color:P.rose, fontSize:17 }}>★</motion.span>
@@ -817,7 +843,7 @@ export default function LandingPage() {
                          fontFamily:"'Playfair Display',serif" }}>Simple pricing</h2>
           </motion.div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:22 }}>
-            {PRICING.map((p,i)=>(
+            {PRICING.map((p, i) => (
               <motion.div key={p.name}
                 initial={{ opacity:0, y:60, scale:0.88 }} whileInView={{ opacity:1, y:0, scale:1 }}
                 viewport={{ once:true }} transition={{ delay:i*0.13, type:"spring", stiffness:95 }}
@@ -846,7 +872,7 @@ export default function LandingPage() {
                 </div>
                 <ul style={{ listStyle:"none", padding:0, margin:"0 0 34px", flex:1,
                              display:"flex", flexDirection:"column", gap:14 }}>
-                  {p.features.map((f,j)=>(
+                  {p.features.map((f, j) => (
                     <motion.li key={f} initial={{ opacity:0, x:-10 }}
                       whileInView={{ opacity:1, x:0 }} viewport={{ once:true }}
                       transition={{ delay:0.2+j*0.08 }}
@@ -884,13 +910,13 @@ export default function LandingPage() {
                          fontFamily:"'Playfair Display',serif" }}>Frequently asked questions</h2>
           </motion.div>
           <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-            {FAQS.map((f,i)=>(
+            {FAQS.map((f, i) => (
               <motion.div key={i} initial={{ opacity:0, y:22 }} whileInView={{ opacity:1, y:0 }}
                 viewport={{ once:true }} transition={{ delay:i*0.09 }}
                 style={{ background:P.bgCard,
                          border:`1px solid ${openFaq===i ? P.borderPk : P.border}`,
                          borderRadius:16, overflow:"hidden", transition:"border-color 0.3s" }}>
-                <motion.button onClick={()=>setOpenFaq(openFaq===i ? null : i)}
+                <motion.button onClick={() => setOpenFaq(openFaq===i ? null : i)}
                   whileHover={{ backgroundColor:"rgba(236,72,120,0.05)" }}
                   style={{ width:"100%", padding:"22px 26px", display:"flex", justifyContent:"space-between",
                            alignItems:"center", background:"none", border:"none", color:P.text,
@@ -926,11 +952,11 @@ export default function LandingPage() {
           <motion.div animate={{ rotate:[0,360] }} transition={{ duration:30, repeat:Infinity, ease:"linear" }}
             style={{ position:"absolute", fontSize:260, color:`${P.pink}04`, top:-60, right:-60,
                      fontFamily:"serif", pointerEvents:"none", lineHeight:1 }}>✦</motion.div>
-          {particles.slice(0,8).map((p,i)=><Particle key={i} {...p} color={i%2===0?P.pink:P.coral} />)}
+          {particles.slice(0,8).map((p, i) => <Particle key={i} {...p} color={i%2===0 ? P.pink : P.coral} />)}
 
           <div style={{ fontSize:"clamp(28px,4.5vw,52px)", fontWeight:900, marginBottom:20,
                         letterSpacing:"-0.035em", fontFamily:"'Playfair Display',serif", position:"relative" }}>
-            {"Ready to ship faster?".split(" ").map((w,i)=>(
+            {"Ready to ship faster?".split(" ").map((w, i) => (
               <motion.span key={i} initial={{ opacity:0, y:22 }} whileInView={{ opacity:1, y:0 }}
                 viewport={{ once:true }} transition={{ delay:i*0.1 }}
                 style={{ display:"inline-block", marginRight:"0.22em" }}>{w}</motion.span>
@@ -959,7 +985,7 @@ export default function LandingPage() {
             AduraAI
           </motion.div>
           <div style={{ display:"flex", gap:28 }}>
-            {["Privacy","Terms","GitHub","Docs"].map(l=>(
+            {["Privacy","Terms","GitHub","Docs"].map(l => (
               <motion.a key={l} href="#" whileHover={{ color:P.pink, y:-2 }}
                 style={{ textDecoration:"none", color:"inherit", transition:"color 0.2s" }}>{l}</motion.a>
             ))}
